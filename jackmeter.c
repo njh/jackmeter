@@ -182,26 +182,36 @@ void display_scale( int width )
 {
 	int i=0;
 	const int marks[11] = { 0, -5, -10, -15, -20, -25, -30, -35, -40, -50, -60 };
-	char *scale = malloc( width+2 );
-	char *line = malloc( width+2 );
+	char *scale = malloc( width+1 );
+	char *line = malloc( width+1 );
 	
 	
 	// Initialise the scale
 	for(i=0; i<width; i++) { scale[i] = ' '; line[i]='_'; }
-	scale[width+1] = 0;
-	line[width+1] = 0;
+	scale[width] = 0;
+	line[width] = 0;
+	
 	
 	// 'draw' on each of the db marks
 	for(i=0; i < 11; i++) {
 		char mark[5];
 		int pos = iec_scale( marks[i], width )-1;
+		int spos, slen;
 		
 		// Create string of the db value
 		snprintf(mark, 4, "%d", marks[i]);
-		memcpy( scale+(pos-(strlen(mark)/2)), mark, strlen(mark) );
+		
+		// Position the label string
+		slen = strlen(mark);
+		spos = pos-(slen/2);
+		if (spos<0) spos=0;
+		if (spos+strlen(mark)>width) spos=width-slen;
+		memcpy( scale+spos, mark, slen );
+		
+		// Position little marker
 		line[pos] = '|';
 	}
-
+	
 	// Print it to screen
 	printf("%s\n", scale);
 	printf("%s\n", line);
@@ -312,8 +322,8 @@ int main(int argc, char *argv[])
 		printf("Meter is not connected to a port.\n");
 	}
 
-	// Calculate the decay length (should be about 2sec for 60db)
-	decay_len = (int)(2.0f / (1.0f/rate));
+	// Calculate the decay length (should be 1600ms)
+	decay_len = (int)(1.6f / (1.0f/rate));
 	
 
 	// Display the scale
