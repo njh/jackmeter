@@ -182,8 +182,8 @@ void display_scale( int width )
 {
 	int i=0;
 	const int marks[11] = { 0, -5, -10, -15, -20, -25, -30, -35, -40, -50, -60 };
-	char *scale = malloc( width+1 );
-	char *line = malloc( width+1 );
+	char *scale = malloc( width+2 );
+	char *line = malloc( width+2 );
 	
 	
 	// Initialise the scale
@@ -312,8 +312,8 @@ int main(int argc, char *argv[])
 		printf("Meter is not connected to a port.\n");
 	}
 
-	// Calculate the decay length (should be 1600ms)
-	decay_len = (int)(1.6f / (1.0f/rate));
+	// Calculate the decay length (should be about 2sec for 60db)
+	decay_len = (int)(2.0f / (1.0f/rate));
 	
 
 	// Display the scale
