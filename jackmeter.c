@@ -117,7 +117,7 @@ static void cleanup()
 	const char **all_ports;
 	unsigned int i;
 
-	printf("cleanup()\n");
+	fprintf(stderr,"cleanup()\n");
 
 	if (input_port != NULL ) {
 
@@ -203,8 +203,8 @@ void display_scale( int width )
 	}
 
 	// Print it to screen
-	fprintf(stderr, "%s\n", scale);
-	fprintf(stderr, "%s\n", line);
+	printf("%s\n", scale);
+	printf("%s\n", line);
 	free(scale);
 	free(line);
 }
@@ -223,19 +223,19 @@ void display_meter( float peak, int width )
 		dpeak = size;
 	}
 	
-	fprintf(stderr, "\r");
+	printf("\r");
 	
-	for(i=0; i<size-1; i++) { fprintf(stderr, "#"); }
+	for(i=0; i<size-1; i++) { printf("#"); }
 	
 	if (dpeak==size) {
-		fprintf(stderr, "I");
+		printf("I");
 	} else {
-		fprintf(stderr, "#");
-		for(i=0; i<dpeak-size-1; i++) { fprintf(stderr, " "); }
-		fprintf(stderr, "I");
+		printf("#");
+		for(i=0; i<dpeak-size-1; i++) { printf(" "); }
+		printf("I");
 	}
 	
-	for(i=0; i<width-dpeak; i++) { fprintf(stderr, " "); }
+	for(i=0; i<width-dpeak; i++) { printf(" "); }
 }
 
 
@@ -247,6 +247,9 @@ int main(int argc, char *argv[])
 	float ref_lev;
 	int rate = 4;
 	int opt;
+
+	// Make STDOUT unbuffered
+	setbuf(stdout, NULL);
 
 	while ((opt = getopt(argc, argv, "w:f:r:h")) != -1) {
 		switch (opt) {
