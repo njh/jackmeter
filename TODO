@@ -3,10 +3,12 @@ use ncurses ?
 	- hide the cursor
 	- only draw bits that have changed
 	- get the width of the teminal
+	- ANSI colour !
 
 more than one channel
 
 use key strokes to choose input port
 
 improve meter decay
+
 
