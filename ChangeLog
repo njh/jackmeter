@@ -1,0 +1,6 @@
+2002-09-27	Auto*'d package - was Makefile+tarball
+
+2002-12-14	Improved graphics
+		Fixed segfaults when making insert connections
+		Reduced maximum cpu usage
+		Cleaned up insersion code

@@ -1,0 +1,29 @@
+# Process this file with autoconf to produce a configure script.
+AC_INIT(jackmeter.c)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(jackmeter, 0.1)
+
+# Check for C compiler
+AC_PROG_CC
+AC_C_CONST
+
+# Checks for libraries.
+AC_CHECK_LIB([pthread], [pthread_self], , [AC_MSG_ERROR(You need libpthread installed)])
+AC_CHECK_LIB([m], [sqrt], , [AC_MSG_ERROR(Can't find libm)])
+AC_CHECK_LIB([mx], [powf])
+
+# Check for JACK
+PKG_CHECK_MODULES(JACK,jack)
+AC_SUBST(JACK_CFLAGS)
+AC_SUBST(JACK_LIBS)
+
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
+
+#### Do Check for usleep
+
+#### Do check for atexit
+
+AC_OUTPUT([Makefile])
+
