@@ -170,9 +170,9 @@ static int usage( const char * progname )
 {
 	fprintf(stderr, "jackmeter version %s\n\n", VERSION);
 	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [<port>]\n\n", progname);
-	fprintf(stderr, "where  ref-level is the reference signal level for 0dB on the meter\n");
-	fprintf(stderr, "       freqency is how often to update the meter per second [4]\n");
-	fprintf(stderr, "       width is how wide to make the meter [80]\n");
+	fprintf(stderr, "where  freqency is how often to update the meter per second [4]\n");
+	fprintf(stderr, "       ref-level is the reference signal level for 0dB on the meter\n");
+	fprintf(stderr, "       width is how wide to make the meter [79]\n");
 	fprintf(stderr, "       port is the JACK port to monitor\n");
 	exit(1);
 }
