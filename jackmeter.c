@@ -135,16 +135,10 @@ static void cleanup()
 
 
 /* Connect the chosen port to ours */
-static void connect_to_port(jack_client_t *client, char *client_name, char *port_name)
+static void connect_port(jack_client_t *client, char *port_name)
 {
 	jack_port_t *port;
 
-	// Create our input port
-	if (!(input_port = jack_port_register(client, "meter", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
-		fprintf(stderr, "Cannot register input port 'meter'.\n");
-		exit(1);
-	}
-	
 	// Get the port we are connecting to
 	port = jack_port_by_name(client, port_name);
 	if (port == NULL) {
@@ -153,7 +147,7 @@ static void connect_to_port(jack_client_t *client, char *client_name, char *port
 	}
 
 	// Connect the port to our input port
-	fprintf(stderr, "Connecting '%s' to '%s'...\n", jack_port_name(port), jack_port_name(input_port));
+	printf("Connecting '%s' to '%s'...\n", jack_port_name(port), jack_port_name(input_port));
 	if (jack_connect(client, jack_port_name(port), jack_port_name(input_port))) {
 		fprintf(stderr, "Cannot connect port '%s' to '%s'\n", jack_port_name(port), jack_port_name(input_port));
 		exit(1);
@@ -175,10 +169,11 @@ static int fsleep( float secs )
 static int usage( const char * progname )
 {
 	fprintf(stderr, "jackmeter version %s\n\n", VERSION);
-	fprintf(stderr, "Usage %s: [-f freqency] [-r ref-level] [-w width] <port>+\n\n", progname);
+	fprintf(stderr, "Usage %s: [-f freqency] [-r ref-level] [-w width] [<port>]\n\n", progname);
 	fprintf(stderr, "where  ref-level is the reference signal level for 0dB on the meter\n");
 	fprintf(stderr, "       freqency is how often to update the meter per second [4]\n");
-	fprintf(stderr, "       wdith is how wide to make the meter [80]\n");
+	fprintf(stderr, "       width is how wide to make the meter [80]\n");
+	fprintf(stderr, "       port is the JACK port to monitor\n");
 	exit(1);
 }
 
@@ -288,6 +283,12 @@ int main(int argc, char *argv[])
 	}
 	printf("Registering as %s.\n", client_name);
 
+	// Create our input port
+	if (!(input_port = jack_port_register(client, "meter", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
+		fprintf(stderr, "Cannot register input port 'meter'.\n");
+		exit(1);
+	}
+	
 	// Register the cleanup function to be called when program exits
 	atexit( cleanup );
 
@@ -300,9 +301,13 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	// Create and connect the jack ports
-	connect_to_port( client, client_name, argv[ optind ] );
 
+	// Connect our port to specified port
+	if (argc > optind) {
+		connect_port( client, argv[ optind ] );
+	} else {
+		printf("Meter is not connected to a port.\n");
+	}
 
 	// Calculate the decay length (should be 1600ms)
 	decay_len = (int)(1.6f / (1.0f/rate));
