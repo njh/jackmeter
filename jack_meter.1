@@ -5,29 +5,39 @@ jack_meter \- Console based audio meter for JACK
 \fBjack_meter\fR [ \-f \fIfreqency\fR ] [ \-r \fIref-level\fR ]
 [ \-w \fIwidth\fR ] [ \fI<port>\fR ]
 .br
-\fBjack_meter \-h\fR
-.SH DESCRIPTION
-\fBjack_meter\fR blah blah blah blah blah
+\fBjack_meter\fR
+\-h
 
-JACK is a low-latency audio server, originally written for the
-GNU/Linux operating system.  It can connect a number of different JACK
-client applications to an audio device, and also to each other.  Most
-clients are external, running in their own processes as normal
-applications.  JACK also supports internal clients, which run within
-the \fBjackd\fR process using a loadable "plugin" interface.
+.SH DESCRIPTION
+\fBjack_meter\fR is a basic console based DPM (Digital Peak Meter).
+I wrote it for quickly checking remote signal levels, without having to 
+run X11 to use a pretty graphical meter such as \fBmeterbridge\fR.
+
+The port parameter is optional - when missing then you have to connect 
+up the meter to an input port manually.
 
 .SH OPTIONS
 .TP
 \fB\-f \fI freqency \fR
 .br
-Select the output driver.  The only \fIdriver\fR currently documented
-here is \fBalsa\fR (see below).  There are additional drivers named
-\fBcoreaudio\fR, \fBdummy\fR, \fBoss\fR and \fBportaudio\fR.  Examples
-below show how to list their parameters.
+How many times per second to refresh the meter. Default is \fB4\fR.
+.TP
+\fB\-r \fI ref-level \fR
+.br
+The reference signal level for 0dB on the meter.
+.TP
+\fB\-w \fI width \fR
+.br
+The width of the meter (number of characters). The default is \fB79\fR,
+one less than the typical terminal width.
+
 .SH SEE ALSO:
 .br
 http://www.ecs.soton.ac.uk/~njh/jackmeter/
 .br
+http://plugin.org.uk/meterbridge/
+.br
 http://jackit.sourceforge.net/
+
 .SH AUTHORS
 Nicholas Humfrey <njh@ecs.soton.ac.uk>

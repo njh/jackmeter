@@ -1,13 +1,24 @@
-Copyright 1994, 1995, 1996, 1999, 2000, 2001, 2002 Free Software
-Foundation, Inc.
 
-   This file is free documentation; the Free Software Foundation gives
-unlimited permission to copy, distribute and modify it.
+Installing Jack Meter
+=====================
 
-Basic Installation
-==================
+jack_meter uses the automake build system, so should
+work on any system supported by JACK. Quick Start:
 
-   These are generic installation instructions.
+ ./configure
+ make
+
+Then as root:
+
+ make install
+
+
+
+
+
+
+Generic Autoconf Installation Instructions
+==========================================
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -63,6 +74,7 @@ The simplest way to compile this package is:
      for the package's developers.  If you use it, you may have to get
      all sorts of other programs in order to regenerate files that came
      with the distribution.
+
 
 Compilers and Options
 =====================
@@ -226,4 +238,13 @@ operates.
 
 `configure' also accepts some other, not widely useful, options.  Run
 `configure --help' for more details.
+
+
+
+
+Copyright 1994, 1995, 1996, 1999, 2000, 2001, 2002 Free Software
+Foundation, Inc.
+
+   This file is free documentation; the Free Software Foundation gives
+unlimited permission to copy, distribute and modify it.
 
