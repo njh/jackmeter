@@ -1,0 +1,33 @@
+.TH jack_meter "1" 0.1 "March 2005"
+.SH NAME
+jack_meter \- Console based audio meter for JACK
+.SH SYNOPSYS
+\fBjack_meter\fR [ \-f \fIfreqency\fR ] [ \-r \fIref-level\fR ]
+[ \-w \fIwidth\fR ] [ \fI<port>\fR ]
+.br
+\fBjack_meter \-h\fR
+.SH DESCRIPTION
+\fBjack_meter\fR blah blah blah blah blah
+
+JACK is a low-latency audio server, originally written for the
+GNU/Linux operating system.  It can connect a number of different JACK
+client applications to an audio device, and also to each other.  Most
+clients are external, running in their own processes as normal
+applications.  JACK also supports internal clients, which run within
+the \fBjackd\fR process using a loadable "plugin" interface.
+
+.SH OPTIONS
+.TP
+\fB\-f \fI freqency \fR
+.br
+Select the output driver.  The only \fIdriver\fR currently documented
+here is \fBalsa\fR (see below).  There are additional drivers named
+\fBcoreaudio\fR, \fBdummy\fR, \fBoss\fR and \fBportaudio\fR.  Examples
+below show how to list their parameters.
+.SH SEE ALSO:
+.br
+http://www.ecs.soton.ac.uk/~njh/jackmeter/
+.br
+http://jackit.sourceforge.net/
+.SH AUTHORS
+Nicholas Humfrey <njh@ecs.soton.ac.uk>
