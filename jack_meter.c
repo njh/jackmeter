@@ -170,7 +170,7 @@ static int usage( const char * progname )
 {
 	fprintf(stderr, "jackmeter version %s\n\n", VERSION);
 	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [<port>]\n\n", progname);
-	fprintf(stderr, "where  freqency is how often to update the meter per second [4]\n");
+	fprintf(stderr, "where  freqency is how often to update the meter per second [8]\n");
 	fprintf(stderr, "       ref-level is the reference signal level for 0dB on the meter\n");
 	fprintf(stderr, "       width is how wide to make the meter [79]\n");
 	fprintf(stderr, "       port is the JACK port to monitor\n");
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 	char client_name[255];
 	int running = 1;
 	float ref_lev;
-	int rate = 4;
+	int rate = 8;
 	int opt;
 
 	// Make STDOUT unbuffered

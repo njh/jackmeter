@@ -4,11 +4,16 @@ use ncurses ?
 	- only draw bits that have changed
 	- get the width of the teminal
 	- ANSI colour !
+	- (see ecasignalview)
 
 more than one channel
+
+count clipped samples
+monitor max peak
 
 use key strokes to choose input port
 
 improve meter decay
 
+automatically connect to first two ports found
 
