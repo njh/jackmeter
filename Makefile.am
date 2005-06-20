@@ -1,5 +1,5 @@
-AM_CFLAGS = -g -Wall $(JACK_CFLAGS)
-AM_LDFLAGS = -lm $(JACK_LIBS)
+AM_CFLAGS = -g -Wall @JACK_CFLAGS@
+AM_LDFLAGS = -lm @JACK_LIBS@
 
 
 bin_PROGRAMS = jack_meter
