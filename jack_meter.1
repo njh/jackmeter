@@ -1,9 +1,9 @@
-.TH jack_meter "1" 0.1 "March 2005"
+.TH jack_meter "1" 0.3 "September 2005"
 .SH NAME
 jack_meter \- Console based Digital Peak Meter for JACK
 .SH SYNOPSYS
 \fBjack_meter\fR [ \-f \fIfreqency\fR ] [ \-r \fIref-level\fR ]
-[ \-w \fIwidth\fR ] [ \fI<port>\fR ]
+[ \-w \fIwidth\fR ] [\-n ] [ \fI<port>\fR, ... ]
 .br
 \fBjack_meter\fR
 \-h
@@ -14,7 +14,8 @@ I wrote it for quickly checking remote signal levels, without having to
 run X11 to use a pretty graphical meter such as \fBmeterbridge\fR.
 
 The port parameter is optional - when missing then you have to connect 
-up the meter to an input port manually.
+up the meter to an input port manually. 
+If more than one port is specified then the inputs are mixed.
 
 .SH OPTIONS
 .TP
@@ -30,6 +31,9 @@ The reference signal level for 0dB on the meter.
 .br
 The width of the meter (number of characters). The default is \fB79\fR,
 one less than the typical terminal width.
+\fB\-n
+.br
+Outputs meter level as a number in decibels instead of a bar graph display. 
 
 .SH SEE ALSO:
 .br

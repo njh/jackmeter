@@ -15,5 +15,6 @@ use key strokes to choose input port
 
 improve meter decay
 
-automatically connect to first two ports found
+automatically connect to first port found?
 
+drive LEDs connected to parallel port?

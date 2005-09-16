@@ -147,7 +147,7 @@ static void connect_port(jack_client_t *client, char *port_name)
 	}
 
 	// Connect the port to our input port
-	printf("Connecting '%s' to '%s'...\n", jack_port_name(port), jack_port_name(input_port));
+	fprintf(stderr,"Connecting '%s' to '%s'...\n", jack_port_name(port), jack_port_name(input_port));
 	if (jack_connect(client, jack_port_name(port), jack_port_name(input_port))) {
 		fprintf(stderr, "Cannot connect port '%s' to '%s'\n", jack_port_name(port), jack_port_name(input_port));
 		exit(1);
@@ -169,11 +169,12 @@ static int fsleep( float secs )
 static int usage( const char * progname )
 {
 	fprintf(stderr, "jackmeter version %s\n\n", VERSION);
-	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [<port>]\n\n", progname);
-	fprintf(stderr, "where  freqency is how often to update the meter per second [8]\n");
-	fprintf(stderr, "       ref-level is the reference signal level for 0dB on the meter\n");
-	fprintf(stderr, "       width is how wide to make the meter [79]\n");
-	fprintf(stderr, "       port is the JACK port to monitor\n");
+	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [-n] [<port>, ...]\n\n", progname);
+	fprintf(stderr, "where  -f      is how often to update the meter per second [8]\n");
+	fprintf(stderr, "       -r      is the reference signal level for 0dB on the meter\n");
+	fprintf(stderr, "       -w      is how wide to make the meter [79]\n");
+	fprintf(stderr, "       -n      changes mode to output meter level as number in decibels\n");
+	fprintf(stderr, "       <port>  the port(s) to monitor (multiple ports are mixed)\n");
 	exit(1);
 }
 
@@ -220,9 +221,8 @@ void display_scale( int width )
 }
 
 
-void display_meter( float peak, int width )
+void display_meter( int db, int width )
 {
-	float db = 20.0f * log10f(peak * bias);
 	int size = iec_scale( db, width );
 	int i;
 	
@@ -252,35 +252,38 @@ void display_meter( float peak, int width )
 int main(int argc, char *argv[])
 {
 	int console_width = 79;
-	char client_name[255];
+	jack_status_t status;
 	int running = 1;
 	float ref_lev;
+	int decibels_mode = 0;
 	int rate = 8;
 	int opt;
 
 	// Make STDOUT unbuffered
 	setbuf(stdout, NULL);
 
-	while ((opt = getopt(argc, argv, "w:f:r:h")) != -1) {
+	while ((opt = getopt(argc, argv, "w:f:r:nhv")) != -1) {
 		switch (opt) {
 			case 'r':
 				ref_lev = atof(optarg);
-				printf("Reference level: %.1fdB\n", ref_lev);
+				fprintf(stderr,"Reference level: %.1fdB\n", ref_lev);
 				bias = powf(10.0f, ref_lev * -0.05f);
 				break;
 			case 'f':
 				rate = atoi(optarg);
-				printf("Updates per second: %d\n", rate);
+				fprintf(stderr,"Updates per second: %d\n", rate);
 				break;
 			case 'w':
 				console_width = atoi(optarg);
-				printf("Console Width: %d\n", console_width);
+				fprintf(stderr,"Console Width: %d\n", console_width);
+				break;
+			case 'n':
+				decibels_mode = 1;
 				break;
 			case 'h':
-				/* Force help to be shown */
-				usage( argv[0] );
-				break;
+			case 'v':
 			default:
+				/* Show usage/version information */
 				usage( argv[0] );
 				break;
 		}
@@ -289,12 +292,11 @@ int main(int argc, char *argv[])
 
 
 	// Register with Jack
-	snprintf(client_name, 255, "meter-%d", getpid());
-	if ((client = jack_client_new(client_name)) == 0) {
-		fprintf(stderr, "JACK server not running?\n");
+	if ((client = jack_client_open("meter", JackNullOption, &status)) == 0) {
+		fprintf(stderr, "Failed to start jack client: %d\n", status);
 		exit(1);
 	}
-	printf("Registering as %s.\n", client_name);
+	fprintf(stderr,"Registering as '%s'.\n", jack_get_client_name( client ) );
 
 	// Create our input port
 	if (!(input_port = jack_port_register(client, "meter", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
@@ -315,11 +317,14 @@ int main(int argc, char *argv[])
 	}
 
 
-	// Connect our port to specified port
+	// Connect our port to specified port(s)
 	if (argc > optind) {
-		connect_port( client, argv[ optind ] );
+		while (argc > optind) {
+			connect_port( client, argv[ optind ] );
+			optind++;
+		}
 	} else {
-		printf("Meter is not connected to a port.\n");
+		fprintf(stderr,"Meter is not connected to a port.\n");
 	}
 
 	// Calculate the decay length (should be 1600ms)
@@ -327,10 +332,19 @@ int main(int argc, char *argv[])
 	
 
 	// Display the scale
-	display_scale( console_width );
+	if (decibels_mode==0) {
+		display_scale( console_width );
+	}
 
 	while (running) {
-		display_meter( read_peak(), console_width );
+		float db = 20.0f * log10f(read_peak() * bias);
+		
+		if (decibels_mode==1) {
+			printf("%1.1f\n", db);
+		} else {
+			display_meter( db, console_width );
+		}
+		
 		fsleep( 1.0f/rate );
 	}
 
