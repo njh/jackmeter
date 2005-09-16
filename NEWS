@@ -1,19 +1,19 @@
-Mon Feb 28 22:06:24 GMT 2005 Nicholas Humfrey <njh@aelius.com>
+Mon Feb 28 22:06:24 GMT 2005 Nicholas J. Humfrey <njh@aelius.com>
 
   * initial version - based on code from meterbridge
   
-Tue Mar 22 12:52:31 GMT 2005 Nicholas Humfrey <njh@aelius.com>
+Tue Mar 22 12:52:31 GMT 2005 Nicholas J. Humfrey <njh@aelius.com>
 
   * bug fixes
   * documentation
   * first public release
 
-Mon Jun 20 15:24:55 BST 2005 Nicholas Humfrey <njh@aelius.com>
+Mon Jun 20 15:24:55 BST 2005 Nicholas J. Humfrey <njh@aelius.com>
 
   * version 0.2
   * minor changes to build system
 
-Fri Sep 16 01:06:24 BST 2005 Nicholas Humfrey <njh@aelius.com>
+Fri Sep 16 01:06:24 BST 2005 Nicholas J. Humfrey <njh@aelius.com>
 
   * version 0.3
   * uses new JACK API (and hence requires JACK version 0.100.0)
