@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr,"Registering as '%s'.\n", jack_get_client_name( client ) );
 
 	// Create our input port
-	if (!(input_port = jack_port_register(client, "meter", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
+	if (!(input_port = jack_port_register(client, "in", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0))) {
 		fprintf(stderr, "Cannot register input port 'meter'.\n");
 		exit(1);
 	}
