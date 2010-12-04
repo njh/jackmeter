@@ -1,6 +1,5 @@
 .deps
 .libs
-*.a
 *.gz
 *.la
 *.lo
@@ -18,7 +17,6 @@ config.cache
 config.log
 config.status
 configure
-libtool
 Makefile
 Makefile.in
 stamp-h1
