@@ -225,6 +225,7 @@ void display_meter( int db, int width )
 {
 	int size = iec_scale( db, width );
 	int i;
+	char buffer[width+1];
 	
 	if (size > dpeak) {
 		dpeak = size;
@@ -235,17 +236,12 @@ void display_meter( int db, int width )
 	
 	printf("\r");
 	
-	for(i=0; i<size-1; i++) { printf("#"); }
-	
-	if (dpeak==size) {
-		printf("I");
-	} else {
-		printf("#");
-		for(i=0; i<dpeak-size-1; i++) { printf(" "); }
-		printf("I");
-	}
-	
-	for(i=0; i<width-dpeak; i++) { printf(" "); }
+	for(i=0; i<width; i++) buffer[i] = ' ';
+	for(i=0; i<size;  i++) buffer[i] = '#';
+	buffer[dpeak] = 'I';
+	buffer[width] = 0; // null terminating
+
+	printf("%s", buffer);
 }
 
 
