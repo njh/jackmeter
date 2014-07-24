@@ -174,6 +174,7 @@ static int usage( const char * progname )
 	fprintf(stderr, "       -r      is the reference signal level for 0dB on the meter\n");
 	fprintf(stderr, "       -w      is how wide to make the meter [79]\n");
 	fprintf(stderr, "       -n      changes mode to output meter level as number in decibels\n");
+	fprintf(stderr, "       -c      colorize the output\n");
 	fprintf(stderr, "       <port>  the port(s) to monitor (multiple ports are mixed)\n");
 	exit(1);
 }
@@ -221,7 +222,7 @@ void display_scale( int width )
 }
 
 
-void display_meter( int db, int width )
+void display_meter( int db, int width, int color )
 {
 	int size = iec_scale( db, width );
 	int i;
@@ -241,7 +242,11 @@ void display_meter( int db, int width )
 	buffer[dpeak] = 'I';
 	buffer[width] = 0; // null terminating
 
-	printf("%s", buffer);
+	if (color) {
+		printf("\e[32m%.55s\e[33m%.10s\e[31m%s\e[0m", buffer, buffer+55, buffer+65);
+	} else {
+		printf("%s", buffer);
+	}
 }
 
 
@@ -252,13 +257,14 @@ int main(int argc, char *argv[])
 	int running = 1;
 	float ref_lev;
 	int decibels_mode = 0;
+	int color = 0;
 	int rate = 8;
 	int opt;
 
 	// Make STDOUT unbuffered
 	setbuf(stdout, NULL);
 
-	while ((opt = getopt(argc, argv, "w:f:r:nhv")) != -1) {
+	while ((opt = getopt(argc, argv, "w:f:r:nchv")) != -1) {
 		switch (opt) {
 			case 'r':
 				ref_lev = atof(optarg);
@@ -275,6 +281,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'n':
 				decibels_mode = 1;
+				break;
+			case 'c':
+				color = 1;
 				break;
 			case 'h':
 			case 'v':
@@ -338,7 +347,7 @@ int main(int argc, char *argv[])
 		if (decibels_mode==1) {
 			printf("%1.1f\n", db);
 		} else {
-			display_meter( db, console_width );
+			display_meter( db, console_width, color );
 		}
 		
 		fsleep( 1.0f/rate );
