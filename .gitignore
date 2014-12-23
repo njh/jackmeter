@@ -6,13 +6,7 @@
 *.o
 aclocal.m4
 autom4te.cache
-build-scripts/*.m4
-build-scripts/config.guess
-build-scripts/config.sub
-build-scripts/depcomp
-build-scripts/install-sh
-build-scripts/ltmain.sh
-build-scripts/missing
+build-scripts/*
 config.cache
 config.log
 config.status
