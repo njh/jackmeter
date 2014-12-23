@@ -38,10 +38,10 @@ float peak = 0.0f;
 int dpeak = 0;
 int dtime = 0;
 int decay_len;
-
+char *server_name = NULL;
 jack_port_t *input_port = NULL;
 jack_client_t *client = NULL;
-
+jack_options_t options = JackNoStartServer;
 
 
 /* Read and reset the recent peak sample */
@@ -169,10 +169,11 @@ static int fsleep( float secs )
 static int usage( const char * progname )
 {
 	fprintf(stderr, "jackmeter version %s\n\n", VERSION);
-	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [-n] [<port>, ...]\n\n", progname);
+	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [-s servername] [-n] [<port>, ...]\n\n", progname);
 	fprintf(stderr, "where  -f      is how often to update the meter per second [8]\n");
 	fprintf(stderr, "       -r      is the reference signal level for 0dB on the meter\n");
 	fprintf(stderr, "       -w      is how wide to make the meter [79]\n");
+	fprintf(stderr, "       -s      is the [optional] name given the jack server when it was started\n");
 	fprintf(stderr, "       -n      changes mode to output meter level as number in decibels\n");
 	fprintf(stderr, "       <port>  the port(s) to monitor (multiple ports are mixed)\n");
 	exit(1);
@@ -262,8 +263,13 @@ int main(int argc, char *argv[])
 	// Make STDOUT unbuffered
 	setbuf(stdout, NULL);
 
-	while ((opt = getopt(argc, argv, "w:f:r:nhv")) != -1) {
+	while ((opt = getopt(argc, argv, "s:w:f:r:nhv")) != -1) {
 		switch (opt) {
+			case 's':
+				server_name = (char *) malloc (sizeof (char) * strlen(optarg));
+            			strcpy (server_name, optarg);
+				options |= JackServerName;
+				break;
 			case 'r':
 				ref_lev = atof(optarg);
 				fprintf(stderr,"Reference level: %.1fdB\n", ref_lev);
@@ -292,7 +298,7 @@ int main(int argc, char *argv[])
 
 
 	// Register with Jack
-	if ((client = jack_client_open("meter", JackNullOption, &status)) == 0) {
+	if ((client = jack_client_open("meter", options, &status, server_name)) == 0) {
 		fprintf(stderr, "Failed to start jack client: %d\n", status);
 		exit(1);
 	}
