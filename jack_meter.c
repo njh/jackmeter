@@ -23,6 +23,7 @@
 //for sigalrm catching
 #include <signal.h>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -34,11 +35,12 @@
 #include <getopt.h>
 #include "config.h"
 
-#define WAITING_SLEEP_TIME		1000	//1 ms steps
+extern int errno;
+#define WAITING_SLEEP_TIME		999999	//999 ms steps
 #define MAX_CHANNELS			16
 
-unsigned long sleepTimeUs = 0;
-unsigned long slept = 0;
+unsigned int sleepTimeUs = 0;
+unsigned int slept = 0;
 volatile unsigned char time_to_print=0;
 int verbosity = 1;
 
@@ -52,7 +54,7 @@ float peak[MAX_CHANNELS];// = 0.0f;
 
 int dpeak[MAX_CHANNELS];
 int dtime[MAX_CHANNELS];
-unsigned long int decay_len;
+long int decay_len;
 int rate = 8;
 int userRate = 8;
 char *server_name = NULL;
@@ -309,7 +311,7 @@ void time_handler( int sig ){
 		slept-=sleepTimeUs;//WAITING_SLEEP_TIME;
 		rate--;
 		if (rate<=0) rate = 1;
-		decay_len = (unsigned long int)(1.6f / (1.0f/rate));
+		decay_len = (long int)(1.6f / (1.0f/rate));
 		sleepTimeUs = 1000000.0f/rate;
 		//renew ualarm with new sleepTime
 		ualarm( sleepTimeUs, sleepTimeUs );
@@ -448,7 +450,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	// Calculate the decay length (should be 1600ms)
-	decay_len = (int)(1.6f / (1.0f/rate));
+	decay_len = (long int)(1.6f / (1.0f/rate));
 
 	//where to print first meter with scales. Row from up to down.
 	unsigned int startRow = 1+printed_info_rows;
@@ -485,19 +487,25 @@ int main(int argc, char *argv[])
 		 * waiting here while it is time to print again
 		 */
 		while (time_to_print==0){
-			unsigned int part = usleep(WAITING_SLEEP_TIME);
-			if (WAITING_SLEEP_TIME>=part) slept+=(WAITING_SLEEP_TIME-part);
-			if (part!=0) break;
+			if (usleep(WAITING_SLEEP_TIME)==-1){
+				//catch reason to be awaken
+				int errsv = errno;
+				if (errsv==EINTR){
+					//awaken by interval timer
+					break;
+				} else if (errsv==EINVAL) {
+					//unsupported sleep time
+					exit(1);
+				}
+			}
 		}
 		time_to_print=0;
 
 		fprintf(stderr, "\n");
 		printed_info_rows++;
+
 		if (verbosity>1){
 			fprintf(stderr, "SleepTime %lu ms, rate = %d   \n",sleepTimeUs/1000, rate);
-			fprintf(stderr, "Slept after drawing: %lu ms   \n",slept/1000);
-			fprintf(stderr, "Drawing and others took: %lu ms   \n", ((sleepTimeUs)-(slept))/1000);
-			printed_info_rows+=2;
 		}
 	}
 	return 0;
