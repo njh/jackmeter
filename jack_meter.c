@@ -193,7 +193,7 @@ static void connect_port(jack_client_t *client, char *port_name, unsigned int in
 static int usage( const char * progname )
 {
 	fprintf(stderr, "jackmeter version %s\n\n", VERSION);
-	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [-s servername] [-n] [-c channels] [-v verbositylevel] [<port>, ...]\n\n", progname);
+	fprintf(stderr, "Usage %s [-f freqency] [-r ref-level] [-w width] [-s servername] [-n] [-p ports] [-v verbositylevel] [<port>, ...]\n\n", progname);
 	fprintf(stderr, "where  -f      is how often to update the meter per second [8]\n");
 	fprintf(stderr, "       -r      is the reference signal level for 0dB on the meter\n");
 	fprintf(stderr, "       -w      is how wide to make the meter [79]\n");
