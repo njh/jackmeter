@@ -505,7 +505,7 @@ int main(int argc, char *argv[])
 		printed_info_rows++;
 
 		if (verbosity>1){
-			fprintf(stderr, "SleepTime %lu ms, rate = %d   \n",sleepTimeUs/1000, rate);
+			fprintf(stderr, "SleepTime %u ms, rate = %d   \n",sleepTimeUs/1000, rate);
 		}
 	}
 	return 0;
